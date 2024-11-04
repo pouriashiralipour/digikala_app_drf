@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -43,6 +44,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # third party
+    "rest_framework",
+    "djoser",
+    "rest_framework_simplejwt",
     # my apps
     "core",
 ]
@@ -133,3 +138,29 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # custom user
 AUTH_USER_MODEL = "core.CustomUser"
+
+
+# rest framework config
+REST_FRAMEWORK = {
+    "COERCE_DECIMAL_TO_STRING": False,
+    # "PAGE_SIZE": 10,
+    # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # default = 5 minatues
+    # "REFRESH_TOKEN_LIFETIME": timedelta(seconds=10),  # default = 1 day
+    "AUTH_HEADER_TYPES": ("JWT",),
+}
+
+
+# DJOSER = {
+#     "SERIALIZERS": {
+#         "user_create": "core.serializers.UserCreateSerializer",
+#         "current_user": "core.serializers.UserSerializer",
+#     },
+# }
