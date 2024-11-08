@@ -56,11 +56,15 @@ class OTPRequestView(views.APIView):
 
         if is_phone_number(identifier):
             otp = str(random.randint(10000, 99999))
-            cache.set(f"otp_{identifier}", otp, 300)
+            cache.set(f"otp_{identifier}", otp, 300)  # ذخیره OTP با انقضا 5 دقیقه
+            cache.set(
+                f"last_identifier_{request.user.id}", identifier, 300
+            )  # ذخیره identifier برای کاربر
             print(f"OTP for {identifier}: {otp}")
         elif "@" in identifier:
             otp = str(random.randint(10000, 99999))
             cache.set(f"otp_{identifier}", otp, 300)
+            cache.set(f"last_identifier_{request.user.id}", identifier, 300)
             print(f"OTP for {identifier}: {otp}")
         else:
             return Response(
@@ -76,8 +80,16 @@ class OTPVerifyView(views.APIView):
         serializer = OTPVerifySerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        identifier = serializer.validated_data["identifier"]
         otp = serializer.validated_data["otp"]
+        identifier = cache.get(
+            f"last_identifier_{request.user.id}"
+        )  # بازیابی identifier از کش
+
+        if not identifier:
+            return Response(
+                {"detail": "No identifier found for this session."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         cached_otp = cache.get(f"otp_{identifier}")
         if cached_otp != otp:

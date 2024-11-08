@@ -16,5 +16,4 @@ class OTPRequestSerializer(serializers.Serializer):
 
 
 class OTPVerifySerializer(serializers.Serializer):
-    identifier = serializers.CharField()
     otp = serializers.CharField(max_length=5)
