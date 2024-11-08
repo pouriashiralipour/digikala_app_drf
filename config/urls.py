@@ -21,7 +21,5 @@ from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path(r"auth/", include("djoser.urls")),
-    path(r"auth/", include("djoser.urls.jwt")),
     path("", include("core.urls")),
 ] + debug_toolbar_urls()

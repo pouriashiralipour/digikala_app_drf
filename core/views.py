@@ -3,17 +3,48 @@ import re
 
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
-from rest_framework import status, views
+from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from core.serializers import OTPRequestSerializer, OTPVerifySerializer
+from core.models import CustomUser
+from core.serializers import OTPRequestSerializer, OTPVerifySerializer, UserSerializer
 
 User = get_user_model()
 
 
 def is_phone_number(identifier):
     return re.match(r"^\+?\d{10,15}$", identifier) is not None
+
+
+class IsAdminOrSelf(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user.is_staff or obj == request.user
+
+
+class UserListView(generics.ListCreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        if self.request.user.is_staff:
+            return CustomUser.objects.all()
+        return CustomUser.objects.filter(id=self.request.user.id)
+
+    def perform_create(self, serializer):
+        if self.request.user.is_staff:
+            serializer.save()
+        else:
+            return Response({"detail": "Permission denied."}, status=403)
+
+
+class UserMeView(generics.RetrieveUpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
 
 
 class OTPRequestView(views.APIView):

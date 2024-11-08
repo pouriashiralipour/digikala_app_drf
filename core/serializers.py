@@ -5,16 +5,10 @@ from rest_framework import serializers
 from core.models import CustomUser
 
 
-class UserCreateSerializer(DjoserUserCreateSerializer):
-    class Meta(DjoserUserCreateSerializer.Meta):
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
         model = CustomUser
-        fields = ["id", "phone_number", "email", "first_name", "last_name"]
-
-
-class UserSerializer(DjoserUserSerializer):
-    class Meta(DjoserUserSerializer.Meta):
-        model = CustomUser
-        fields = ["id", "phone_number", "email", "first_name", "last_name"]
+        fields = ["first_name", "last_name", "email", "phone_number"]
 
 
 class OTPRequestSerializer(serializers.Serializer):
