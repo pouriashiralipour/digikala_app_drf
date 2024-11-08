@@ -22,7 +22,7 @@ class IsAdminOrSelf(permissions.BasePermission):
         return request.user.is_staff or obj == request.user
 
 
-class UserListView(generics.ListCreateAPIView):
+class UserListView(generics.ListAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]

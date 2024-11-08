@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "debug_toolbar",
     # my apps
     "core",
+    "store",
 ]
 
 MIDDLEWARE = [
