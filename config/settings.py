@@ -144,21 +144,14 @@ AUTH_USER_MODEL = "core.CustomUser"
 
 # rest framework config
 REST_FRAMEWORK = {
-    "COERCE_DECIMAL_TO_STRING": False,
-    # "PAGE_SIZE": 10,
-    # "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
 
-
 SIMPLE_JWT = {
-    # "ACCESS_TOKEN_LIFETIME": timedelta(days=1),  # default = 5 minatues
-    # "REFRESH_TOKEN_LIFETIME": timedelta(seconds=10),  # default = 1 day
     "AUTH_HEADER_TYPES": ("JWT",),
 }
-
 
 DJOSER = {
     "SERIALIZERS": {
