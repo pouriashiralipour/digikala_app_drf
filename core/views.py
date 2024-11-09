@@ -22,7 +22,7 @@ class IsAdminOrSelf(permissions.BasePermission):
         return request.user.is_staff or obj == request.user
 
 
-class UserListView(generics.ListAPIView):
+class UserListView(generics.ListAPIView, generics.RetrieveAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -39,12 +39,20 @@ class UserListView(generics.ListAPIView):
             return Response({"detail": "Permission denied."}, status=403)
 
 
-class UserMeView(generics.RetrieveUpdateAPIView):
+class UserMeView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
         return self.request.user
+
+    def destroy(self, request, *args, **kwargs):
+        user = self.get_object()
+        if request.user.is_staff:
+            return super().destroy(request, *args, **kwargs)
+        return Response(
+            {"detail": "Permission denied."}, status=status.HTTP_403_FORBIDDEN
+        )
 
 
 class OTPRequestView(views.APIView):

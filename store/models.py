@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 
@@ -27,6 +28,14 @@ class Brand(models.Model):
         upload_to="brand",
         verbose_name=_("image"),
     )
+
+    def brand_image(self):
+        try:
+            return format_html(
+                "<img width=50 height=50 src='{}'>".format(self.image.url)
+            )
+        except:
+            return ""
 
     class Meta:
         verbose_name = _("Barnd")
@@ -69,6 +78,14 @@ class Category(models.Model):
     datetime_created = models.DateTimeField(
         auto_now_add=True, verbose_name=_("datetime created")
     )
+
+    def category_image(self):
+        try:
+            return format_html(
+                "<img width=50 height=50 src='{}'>".format(self.image.url)
+            )
+        except:
+            return ""
 
     class Meta:
         verbose_name = _("Category")
@@ -123,6 +140,14 @@ class Product(models.Model):
     datetime_modified = models.DateTimeField(
         auto_now=True, verbose_name=_("datetime modified")
     )
+
+    def product_image(self):
+        try:
+            return format_html(
+                "<img width=60 height=60 src='{}'>".format(self.image_1.url)
+            )
+        except:
+            return ""
 
     class Meta:
         verbose_name = _("Product")
