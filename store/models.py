@@ -176,3 +176,31 @@ class ProductImages(models.Model):
     class Meta:
         verbose_name = _("ProductImage")
         verbose_name_plural = _("ProductImages")
+
+
+class Customer(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, verbose_name=_("user"), on_delete=models.PROTECT
+    )
+    birth_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.first_name} {self.user.last_name}"
+
+    class Meta:
+        verbose_name = _("Customer")
+        verbose_name_plural = _("Customers")
+
+
+class Address(models.Model):
+    customer = models.OneToOneField(
+        Customer, on_delete=models.CASCADE, primary_key=True, verbose_name=_("customer")
+    )
+    province = models.CharField(max_length=255, verbose_name=_("province"))
+    city = models.CharField(max_length=255, verbose_name=_("city"))
+    street = models.CharField(max_length=255, verbose_name=_("street"))
+    postal_code = models.CharField(_("postal_code"), max_length=50)
+
+    class Meta:
+        verbose_name = _("Addresse")
+        verbose_name_plural = _("Addresses")
