@@ -11,6 +11,7 @@ djangorestframework = "*"
 djoser = "*"
 django-debug-toolbar = "*"
 pillow = "*"
+drf-nested-routers = "*"
 
 [dev-packages]
 
