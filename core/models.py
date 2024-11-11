@@ -31,6 +31,7 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser, PermissionsMixin):
+    username = None
     identifier = models.CharField(
         max_length=255, unique=True, verbose_name=_("identifier")
     )

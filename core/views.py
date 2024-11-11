@@ -60,14 +60,18 @@ class OTPRequestView(views.APIView):
         serializer = OTPRequestSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        identifier = serializer.validated_data["identifier"]
+        identifier = serializer.validated_data.get("identifier", None)
+
+        if not identifier:
+            return Response(
+                {"detail": "Identifier is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if is_phone_number(identifier):
             otp = str(random.randint(10000, 99999))
             cache.set(f"otp_{identifier}", otp, 300)  # ذخیره OTP با انقضا 5 دقیقه
-            cache.set(
-                f"last_identifier_{request.user.id}", identifier, 300
-            )  # ذخیره identifier برای کاربر
+            cache.set(f"last_identifier_{request.user.id}", identifier, 300)
             print(f"OTP for {identifier}: {otp}")
         elif "@" in identifier:
             otp = str(random.randint(10000, 99999))
@@ -89,9 +93,7 @@ class OTPVerifyView(views.APIView):
         serializer.is_valid(raise_exception=True)
 
         otp = serializer.validated_data["otp"]
-        identifier = cache.get(
-            f"last_identifier_{request.user.id}"
-        )  # بازیابی identifier از کش
+        identifier = cache.get(f"last_identifier_{request.user.id}")
 
         if not identifier:
             return Response(
