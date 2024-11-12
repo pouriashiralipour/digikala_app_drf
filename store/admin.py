@@ -72,3 +72,14 @@ class CustomerAdmin(admin.ModelAdmin):
 
     def email(self, customer):
         return customer.user.email
+
+
+@admin.register(models.Address)
+class AddressAdmin(admin.ModelAdmin):
+    list_display = [
+        "customer",
+        "province",
+        "city",
+        "street",
+        "postal_code",
+    ]

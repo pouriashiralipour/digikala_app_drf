@@ -193,8 +193,11 @@ class Customer(models.Model):
 
 
 class Address(models.Model):
-    customer = models.OneToOneField(
-        Customer, on_delete=models.CASCADE, primary_key=True, verbose_name=_("customer")
+    customer = models.ForeignKey(
+        Customer,
+        on_delete=models.CASCADE,
+        related_name="addresses",
+        verbose_name=_("customer"),
     )
     province = models.CharField(max_length=255, verbose_name=_("province"))
     city = models.CharField(max_length=255, verbose_name=_("city"))
@@ -204,3 +207,6 @@ class Address(models.Model):
     class Meta:
         verbose_name = _("Addresse")
         verbose_name_plural = _("Addresses")
+
+    def __str__(self):
+        return f"{self.province}, {self.city}, {self.street}"

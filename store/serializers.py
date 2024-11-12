@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Customer
+from .models import Address, Customer
 
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -32,3 +32,13 @@ class CustomerSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ["id", "province", "city", "street", "postal_code"]
+
+    def create(self, validated_data):
+        customer_id = self.context["customer_pk"]
+        return Address.objects.create(customer_id=customer_id, **validated_data)
